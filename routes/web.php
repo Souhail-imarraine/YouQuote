@@ -2,6 +2,7 @@
 
 use Illuminate\Support\Facades\Route;
 
+<<<<<<< HEAD
 /*
 |--------------------------------------------------------------------------
 | Web Routes
@@ -13,6 +14,8 @@ use Illuminate\Support\Facades\Route;
 |
 */
 
+=======
+>>>>>>> master
 Route::get('/', function () {
     return view('welcome');
 });

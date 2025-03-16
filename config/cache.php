@@ -9,6 +9,7 @@ return [
     | Default Cache Store
     |--------------------------------------------------------------------------
     |
+<<<<<<< HEAD
     | This option controls the default cache connection that gets used while
     | using this caching library. This connection is used when another is
     | not explicitly specified when executing a given caching function.
@@ -16,6 +17,15 @@ return [
     */
 
     'default' => env('CACHE_DRIVER', 'file'),
+=======
+    | This option controls the default cache store that will be used by the
+    | framework. This connection is utilized if another isn't explicitly
+    | specified when running a cache operation inside the application.
+    |
+    */
+
+    'default' => env('CACHE_STORE', 'database'),
+>>>>>>> master
 
     /*
     |--------------------------------------------------------------------------
@@ -26,17 +36,25 @@ return [
     | well as their drivers. You may even define multiple stores for the
     | same cache driver to group types of items stored in your caches.
     |
+<<<<<<< HEAD
     | Supported drivers: "apc", "array", "database", "file",
     |         "memcached", "redis", "dynamodb", "octane", "null"
+=======
+    | Supported drivers: "array", "database", "file", "memcached",
+    |                    "redis", "dynamodb", "octane", "null"
+>>>>>>> master
     |
     */
 
     'stores' => [
 
+<<<<<<< HEAD
         'apc' => [
             'driver' => 'apc',
         ],
 
+=======
+>>>>>>> master
         'array' => [
             'driver' => 'array',
             'serialize' => false,
@@ -44,14 +62,25 @@ return [
 
         'database' => [
             'driver' => 'database',
+<<<<<<< HEAD
             'table' => 'cache',
             'connection' => null,
             'lock_connection' => null,
+=======
+            'connection' => env('DB_CACHE_CONNECTION'),
+            'table' => env('DB_CACHE_TABLE', 'cache'),
+            'lock_connection' => env('DB_CACHE_LOCK_CONNECTION'),
+            'lock_table' => env('DB_CACHE_LOCK_TABLE'),
+>>>>>>> master
         ],
 
         'file' => [
             'driver' => 'file',
             'path' => storage_path('framework/cache/data'),
+<<<<<<< HEAD
+=======
+            'lock_path' => storage_path('framework/cache/data'),
+>>>>>>> master
         ],
 
         'memcached' => [
@@ -75,8 +104,13 @@ return [
 
         'redis' => [
             'driver' => 'redis',
+<<<<<<< HEAD
             'connection' => 'cache',
             'lock_connection' => 'default',
+=======
+            'connection' => env('REDIS_CACHE_CONNECTION', 'cache'),
+            'lock_connection' => env('REDIS_CACHE_LOCK_CONNECTION', 'default'),
+>>>>>>> master
         ],
 
         'dynamodb' => [
@@ -99,8 +133,13 @@ return [
     | Cache Key Prefix
     |--------------------------------------------------------------------------
     |
+<<<<<<< HEAD
     | When utilizing the APC, database, memcached, Redis, or DynamoDB cache
     | stores there might be other applications using the same cache. For
+=======
+    | When utilizing the APC, database, memcached, Redis, and DynamoDB cache
+    | stores, there might be other applications using the same cache. For
+>>>>>>> master
     | that reason, you may prefix every cache key to avoid collisions.
     |
     */
