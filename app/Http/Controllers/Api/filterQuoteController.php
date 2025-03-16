@@ -3,7 +3,7 @@
 namespace App\Http\Controllers\Api;
 
 use App\Http\Controllers\Controller;
-use App\Models\Quote; // Assure-toi d'importer le modèle Quote
+use App\Models\Quote;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Validator;
 
