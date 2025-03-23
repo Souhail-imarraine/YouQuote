@@ -4,6 +4,11 @@ namespace App\Providers;
 
 use Illuminate\Support\ServiceProvider;
 
+use Illuminate\Support\Facades\Gate;
+use App\Models\Quote;
+use App\Models\User;
+use PhpParser\Node\Expr\PostDec;
+
 class AppServiceProvider extends ServiceProvider
 {
     /**
@@ -19,6 +24,14 @@ class AppServiceProvider extends ServiceProvider
      */
     public function boot(): void
     {
-        //
+
+        Gate::define('is_admin', function(User $user){
+            return $user->role === 'Admin';
+        });
+        
+        Gate::define('afficher_quote', function(User $user, Quote $quotes){
+            return $user->id  !== $quotes->user_id;
+        });
+
     }
 }

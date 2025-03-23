@@ -7,18 +7,35 @@ use GuzzleHttp\Psr7\Response;
 use Illuminate\Support\Facades\Validator;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Gate;
+
 
 class QuoteController extends Controller
 {
     /**
      * Display a listing of the resource.
      */
-    public function index()
+        public function index()
     {
-        $quotes = Quote::all();
+        $user = auth::user();
+
+        if(Gate::allows('is_admin')) {
+            $quotes = Quote::withCount('likedByUsers')->paginate(100);
+        }else {
+            // $quotes = Quote::where('user_id', $user->id)->get();
+            $quotes = Quote::where('user_id', $user->id)->withCount('likedByUsers')->get();
+        }
+
+        if(!$quotes){
+            return response()->json([
+                'message' => 'Quote not found!',
+            ], 402);
+        }
+
+
         return response()->json([
             'message' => 'Quotes retrieved successfully!',
-            'data' => $quotes,
+            'data' => $quotes->values(),
         ], 200);
     }
 
@@ -30,6 +47,7 @@ class QuoteController extends Controller
         $validateQuotes = validator::make($request->all(), [
             'content' => 'required|string',
             'author' => 'required|string',
+            'tags' => 'sometimes|array',
         ]);
 
         if($validateQuotes->fails()){
@@ -44,10 +62,15 @@ class QuoteController extends Controller
             'user_id' => Auth::user()->id,
         ]);
 
-        return response()->json([
+        if ($request->has('tags')) {
+            $quote->tags()->attach($request->input('tags'));
+        }
+
+
+           return response()->json([
             'message' => 'Quote created successfully!',
-            'data' => $quote,
-        ], 201);
+            'data' => $quote->load(['tags']),
+            ], 201);
 
     }
 
@@ -57,7 +80,7 @@ class QuoteController extends Controller
     public function show(string $id)
     {
         $quote = Quote::find($id);
-        
+
         if (!$quote) {
             return response()->json([
                 'message' => 'Quote not found!',
@@ -78,11 +101,18 @@ class QuoteController extends Controller
 
     public function update(Request $request, string $id)
     {
-        $quote = Quote::find($id);
+        $user = Auth::user();
+
+        // check is admin
+        if(Gate::allows('is_admin')){
+            $quote = Quote::find($id);
+        }else{
+            $quote = Quote::where('user_id', $user->id)->where('id', $id)->first();
+        }
 
         if (!$quote) {
             return response()->json([
-                'message' => 'Quote not found!',
+                'message' => 'Quote not found or you do not have permission to update this quote.',
             ], 404);
         }
 
@@ -111,11 +141,16 @@ class QuoteController extends Controller
      */
     public function destroy(string $id)
     {
-        $quote = Quote::find($id);
+        $user = Auth::user();
+        if(Gate::allows('is_admin')){
+            $quote = Quote::find($id);
+        }else {
+            $quote = Quote::where('user_id', $user->id)->where('id', $id)->first();
+        }
 
         if(!$quote){
             return Response()->json([
-                'message' => 'Quote not Found!',
+                'message' => 'Quote not found or you do not have permission to delete this quote.',
             ], 422);
         }
 
